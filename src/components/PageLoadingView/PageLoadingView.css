@@ -1,0 +1,19 @@
+.page-loading-view-icon {
+  animation-name: page-loading-view-icon-rotate;
+  animation-duration: 1.5s;
+  animation-iteration-count: infinite;
+  animation-timing-function: ease-out-sine;
+}
+
+@keyframes page-loading-view-icon-rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.page-loading-view-text {
+  font-size: 150%;
+}

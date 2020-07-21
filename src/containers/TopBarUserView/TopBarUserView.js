@@ -52,7 +52,7 @@ class TopBarUserView extends Component {
         <ButtonBase aria-owns={menuAnchorEl ? 'action-menu' : undefined} aria-haspopup="true" onClick={this.onMenuToggleHander}>
           <Grid container spacing={1}>
             <Grid item>
-              <Typography color="inherit">{user.email.split('@')[0]}</Typography>
+              <Typography color="inherit">{`${capitalizeFirstLetter(user.firstName)} ${capitalizeFirstLetter(user.lastName)}`}</Typography>
               {/* <Typography color="inherit" variant="caption">
                 {products.find(p => p.id == selectedProductId).name}
               </Typography> */}
@@ -75,7 +75,7 @@ class TopBarUserView extends Component {
                           <Avatar>R</Avatar>
                         </Grid>
                         <Grid item xs>
-                          <Typography color="inherit">{user.email.split('@')[0]}</Typography>
+                          <Typography color="inherit">{`${capitalizeFirstLetter(user.firstName)} ${capitalizeFirstLetter(user.lastName)}`}</Typography>
                         </Grid>
                         {/* <Grid item xs>
                         <ProductSelector
@@ -111,6 +111,10 @@ class TopBarUserView extends Component {
       </Fragment>
     );
   };
+}
+
+const capitalizeFirstLetter = (string) =>{
+  return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
 const mapStateToProps = state => {

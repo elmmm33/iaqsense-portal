@@ -60,9 +60,9 @@ const api = async (method, url, data) => {
 export default api;
 
 export const getErrorMessage = (apiResult) => {
-  let apiError = apiResult.data.error;
+  let apiError = apiResult.data;
 
-  let message = apiError.message;
+  let message = apiError.msg;
   if (apiError.messageKey) {
     let messagePart = apiError.messageKey.split(',');
 
@@ -80,7 +80,7 @@ export const getErrorMessage = (apiResult) => {
 
 export const handleApiFailureWithDialog = (requestDialog, apiResult, followUp = null) => {
   console.log(JSON.stringify(apiResult.data));
-  let apiError = apiResult.data.error;
+  let apiError = apiResult.data;
 
   if (!apiError.action || apiError.action === 'DIALOG') {
     requestDialog({
@@ -119,7 +119,7 @@ export const handleApiFailureWithDialog = (requestDialog, apiResult, followUp = 
 
 export const handleApiFailureWithSnackbar = (makeSnackbar, apiResult) => {
   console.log(JSON.stringify(apiResult.data));
-  let apiError = apiResult.data.error;
+  let apiError = apiResult.data;
 
   if (!apiError.action || apiError.action === 'DIALOG') {
     makeSnackbar(getErrorMessage(apiResult));

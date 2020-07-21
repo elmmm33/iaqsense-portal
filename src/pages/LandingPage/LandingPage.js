@@ -7,7 +7,7 @@ import AuthPanel from '../../containers/AuthPanel/AuthPanel';
 class LandingPage extends Component {
   render() {
     return (
-      <div style={{ margin: 20 }}>
+      <div style={{ margin: 20}}>
         <Typography variant="h4">EVQ Sense</Typography>
         <Typography variant="caption" gutterBottom>{EVQSENSE_PORTAL_VERSION}</Typography>
         <AuthPanel />

@@ -12,6 +12,7 @@
     "cross-env": "^7.0.2",
     "jsonwebtoken": "^8.5.1",
     "loadash": "^1.0.0",
+    "moment": "^2.27.0",
     "react": "^16.13.1",
     "react-confirm-alert": "^2.6.1",
     "react-dom": "^16.13.1",
@@ -25,6 +26,8 @@
   },
   "scripts": {
     "start": "react-scripts start",
+    "start-dev": "cross-env REACT_APP_EVQSENSE_PORTAL_ENV=dev react-scripts start",
+    "start-prd": "cross-env REACT_APP_EVQSENSE_PORTAL_ENV=prd react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"

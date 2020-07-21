@@ -36,13 +36,10 @@ const AuthPanel = props => {
           email,
           password
         });
-
-        console.log(apiResult);
       } catch (e) {
         apiResult = e.response;
       }
-      if (apiResult.data.success) {
-        console.log(apiResult.data);
+      if (apiResult.data && apiResult.data.success) {
         let authToken = apiResult.data.result.token;
         sessionStorage.setItem('authToken', authToken);
         props.login(authToken);

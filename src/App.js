@@ -11,10 +11,10 @@ import SnackbarManager from './containers/SnackbarManager/SnackbarManager';
 import DialogManager from './containers/DialogManager/DialogManager';
 import TopBar from './containers/TopBar/TopBar';
 import NavBar from './containers/NavBar/NavBar';
-
 import PageLoadingView from './components/PageLoadingView/PageLoadingView';
 
 import LandingPage from './pages/LandingPage/LandingPage';
+import DashboardPage from './pages/DashboardPage/DashboardPage';
 
 
 class App extends Component {
@@ -49,8 +49,7 @@ class App extends Component {
 
     if (!this.props.user) {
       return (
-        <div style={{ width: this.state.width, height: this.state.height }}>
-          <CssBaseline />
+        <div style={{ width: this.state.width, height: this.state.height}} >
           <BrowserRouter>
             <Switch>
               <Route path="/" component={LandingPage} />
@@ -81,7 +80,7 @@ class App extends Component {
           <NavBar mobileOpen={this.state.mobileShowMenu} onMobileClose={() => this.setState({ mobileShowMenu: false })} />
           <main className="page-container">
             <Switch>
-              {/* <Route path="/" component={DashboardPage} exact /> */}
+              <Route path="/" component={DashboardPage} exact />
             </Switch>
           </main>
           <SnackbarManager />

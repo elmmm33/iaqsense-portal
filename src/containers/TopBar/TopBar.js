@@ -10,7 +10,7 @@ import TopBarUserView from '../../containers/TopBarUserView/TopBarUserView';
 const TopBar = props => {
 	const { user, classes, onOpenMobileMenu } = props;
 	return (
-		<AppBar position="fixed" color="primary" className={classes.appBar}>
+		<AppBar position="fixed" className={classes.appBar}>
 			<Toolbar>
 				<Hidden mdUp implementation="css">
 					<IconButton color="inherit" aria-label="Open drawer" onClick={onOpenMobileMenu}>
@@ -30,7 +30,8 @@ const TopBar = props => {
 const styles = theme => ({
 	appBar: {
 		zIndex: theme.zIndex.drawer + 1,
-		height: 64
+		height: 64,
+		background: 'linear-gradient(45deg, #403A3E 30%, #BE5869 100%)'
 	}
 });
 

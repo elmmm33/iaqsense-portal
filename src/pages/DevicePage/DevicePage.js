@@ -137,7 +137,7 @@ const DevicePage = props => {
       
       let data;
       if(results && results.length > 0){
-        const lastDataTime = moment(results[results.length-1].timestamp, 'YYYY-MM-DDTHH:mm:ss');
+        const lastDataTime = moment(results[results.length-1].timestamp, 'YYYY-MM-DDTHH:mm:ss').add(1, 's');
         setFrequencyLastTime(lastDataTime.valueOf()); // save the next time point;
 
         if (!frequencyInitLoaded) {

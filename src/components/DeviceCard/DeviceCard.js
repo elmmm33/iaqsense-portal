@@ -29,7 +29,7 @@ const DeviceCard = props => {
           {toHKTimeString(device.lastIngestionTime)}
         </Typography>
         <Grid container justify="flex-end">
-          <Button size="small" onClick={onClickHandler}>Details<NextIcon /></Button>
+          <Button size="small" variant="contained" color="secondary" onClick={onClickHandler}>Details<NextIcon /></Button>
         </Grid>
       </CardContent>
     </Card>

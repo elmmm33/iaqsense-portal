@@ -80,22 +80,7 @@ export const handleApiFailureWithDialog = (requestDialog, apiResult, followUp = 
   console.log(JSON.stringify(apiResult.data));
   let apiError = apiResult.data;
 
-  if (!apiError.action || apiError.action === 'DIALOG') {
-    requestDialog({
-      title: 'API Error',
-      text: getErrorMessage(apiResult),
-      buttons: [
-        {
-          text: 'OK',
-          onClick: () => {
-            if (followUp) {
-              followUp();
-            }
-          },
-        },
-      ],
-    });
-  } else if (apiError.action === 'RELOGIN') {
+  if (apiError.code.includes('AU-')) {
     if (requestDialog) {
       requestDialog({
         title: 'Session expired',
@@ -112,17 +97,32 @@ export const handleApiFailureWithDialog = (requestDialog, apiResult, followUp = 
         ],
       });
     }
-  }
+  }else if (!apiError.action || apiError.action === 'DIALOG') {
+    requestDialog({
+      title: 'API Error',
+      text: getErrorMessage(apiResult),
+      buttons: [
+        {
+          text: 'OK',
+          onClick: () => {
+            if (followUp) {
+              followUp();
+            }
+          },
+        },
+      ],
+    });
+  } 
 };
 
 export const handleApiFailureWithSnackbar = (makeSnackbar, apiResult) => {
-  console.log(JSON.stringify(apiResult.data));
+  // console.log(JSON.stringify(apiResult.data));
   let apiError = apiResult.data;
 
-  if (!apiError.action || apiError.action === 'DIALOG') {
-    makeSnackbar(getErrorMessage(apiResult));
-  } else if (apiError.action === 'RELOGIN') {
+  if (apiError.code.includes('AU-')) {
     makeSnackbar('Please login again');
     sessionStorage.clear();
-  }
+  }else if (!apiError.action || apiError.action === 'DIALOG') {
+    makeSnackbar(getErrorMessage(apiResult));
+  } 
 };

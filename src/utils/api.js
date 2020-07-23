@@ -19,9 +19,7 @@ const api = async (method, url, data) => {
 
   let apiResult;
   try {
-    console.log(options);
     apiResult = await axios(options);
-    console.log(apiResult);
   } catch (e) {
     if (e.response) {
       apiResult = e.response;

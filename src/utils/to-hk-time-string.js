@@ -24,6 +24,13 @@ const toHKTimeString = (input, options) => {
     return time.utcOffset(8).format(format);
   }
 
+  if (input.match(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/)){
+    //YYYY-MM-DDTHH:mm:ss
+    let time = moment(input);
+    return time.format(format);
+  }
+
+
   let time = moment(input).utcOffset(8);
   return time.format(format);
 }

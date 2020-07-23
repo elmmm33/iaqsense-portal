@@ -50,7 +50,7 @@ class TopBarUserView extends Component {
     return (
       <Fragment>
         <ButtonBase aria-owns={menuAnchorEl ? 'action-menu' : undefined} aria-haspopup="true" onClick={this.onMenuToggleHander}>
-          <Grid container spacing={1}>
+          <Grid container spacing={1} alignItems="center">
             <Grid item>
               <Typography color="inherit">{`${capitalizeFirstLetter(user.firstName)} ${capitalizeFirstLetter(user.lastName)}`}</Typography>
               {/* <Typography color="inherit" variant="caption">
@@ -58,7 +58,7 @@ class TopBarUserView extends Component {
               </Typography> */}
             </Grid>
             <Grid item>
-              <Avatar>R</Avatar>
+              <Avatar>{capitalizeFirstLetter(user.firstName)[0]}</Avatar>
             </Grid>
           </Grid>
         </ButtonBase>
@@ -70,11 +70,11 @@ class TopBarUserView extends Component {
                 <ClickAwayListener onClickAway={this.onMenuCloseHandler}>
                   <Fragment>
                     <div className="paper-with-padding">
-                      <Grid container spacing={8}>
+                      <Grid container spacing={2} alignItems="center">
                         <Grid item>
-                          <Avatar>R</Avatar>
+                          <Avatar>{capitalizeFirstLetter(user.firstName)[0]}</Avatar>
                         </Grid>
-                        <Grid item xs>
+                        <Grid item>
                           <Typography color="inherit">{`${capitalizeFirstLetter(user.firstName)} ${capitalizeFirstLetter(user.lastName)}`}</Typography>
                         </Grid>
                         {/* <Grid item xs>
@@ -89,12 +89,12 @@ class TopBarUserView extends Component {
                       </Grid>
                     </div>
                     <MenuList>
-                      <MenuItem onClick={this.onPasswordButtonHandler}>
+                      {/* <MenuItem onClick={this.onPasswordButtonHandler}>
                         <ListItemIcon>
                           <ChangePasswordIcon />
                         </ListItemIcon>
                         <ListItemText>Change Password</ListItemText>
-                      </MenuItem>
+                      </MenuItem> */}
                       <MenuItem onClick={this.onLogoutButtonHandler}>
                         <ListItemIcon>
                           <LogoutIcon />

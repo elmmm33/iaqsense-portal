@@ -6,6 +6,7 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 
 import TopBarUserView from '../../containers/TopBarUserView/TopBarUserView';
+import { themeStyle } from '../../Themes';
 
 const TopBar = props => {
 	const { user, classes, onOpenMobileMenu } = props;
@@ -31,7 +32,8 @@ const styles = theme => ({
 	appBar: {
 		zIndex: theme.zIndex.drawer + 1,
 		height: 64,
-		background: 'linear-gradient(45deg, #403A3E 30%, #BE5869 100%)'
+		// background: themeStyle.palette.primary
+		background: `linear-gradient(45deg, ${themeStyle.palette.primary.main} 30%, ${themeStyle.palette.secondary.main} 100%)`
 	}
 });
 

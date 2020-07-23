@@ -40,9 +40,14 @@ const AuthPanel = props => {
         apiResult = e.response;
       }
       if (apiResult.data && apiResult.data.success) {
-        let authToken = apiResult.data.result.token;
-        sessionStorage.setItem('authToken', authToken);
-        props.login(authToken);
+        console.log(apiResult.data);
+        if(apiResult.data.result.role >= 2){
+          let authToken = apiResult.data.result.token;
+          sessionStorage.setItem('authToken', authToken);
+          props.login(authToken);
+        }else{
+          dialog({ icon: 'times-circle', message: 'Please contact Admin to upgrade your account.' });
+        }
       } else {
         dialog({
           icon: 'times-circle',
@@ -71,7 +76,7 @@ const AuthPanel = props => {
             <InputLabel htmlFor="password">Password</InputLabel>
             <Input name="password" type="password" id="password" autoComplete="current-password" value={password} onChange={onPasswordInputChangedHandler} />
           </FormControl>
-          <Button className="auth-panel-login-paper-button" fullWidth variant="contained" color="primary" onClick={onLoginSubmitHandler}>
+          <Button className="auth-panel-login-paper-button" fullWidth variant="contained"  color="primary" onClick={onLoginSubmitHandler}>
             Sign in
           </Button>
         </form>

@@ -4,19 +4,19 @@ import { indigo, amber,pink } from '@material-ui/core/colors';
 export const themeStyle = createMuiTheme({
   palette: {
     primary: {
-      main: '#403A3E'
+      main: '#403A3E' 
     },
     secondary: {
-      main: '#BE5869'
+      main: '#5894be'
     },
     error: pink,
   },
-  overrides:{
-    MuiButton:{
-      contained:{
-        background: 'linear-gradient(45deg, #403A3E 30%, #BE5869 100%)',
-        color: 'white',
-      }
-    }
-  }
+  // overrides:{
+  //   MuiButton:{
+  //     contained:{
+  //       background: 'linear-gradient(45deg, #403A3E 30%, #BE5869 100%)',
+  //       color: 'white',
+  //     }
+  //   }
+  // }
 });

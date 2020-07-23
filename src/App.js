@@ -15,6 +15,7 @@ import PageLoadingView from './components/PageLoadingView/PageLoadingView';
 
 import LandingPage from './pages/LandingPage/LandingPage';
 import DashboardPage from './pages/DashboardPage/DashboardPage';
+import DevicePage from './pages/DevicePage/DevicePage';
 
 
 class App extends Component {
@@ -81,6 +82,7 @@ class App extends Component {
           <main className="page-container">
             <Switch>
               <Route path="/" component={DashboardPage} exact />
+              <Route path="/devices/:id" component={DevicePage} />
             </Switch>
           </main>
           <SnackbarManager />

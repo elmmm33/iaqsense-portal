@@ -15,7 +15,6 @@ import { withSnackbar } from '../../containers/SnackbarManager/SnackbarManager';
 import { withDialog } from '../../containers/DialogManager/DialogManager';
 
 const DashboardPage = props => {
-  const [initLoad, setInitLoaded] = useState(false);
   const [loaded, setLoaded] = useState(false);
   const [devices, setDevices] = useState([]);
   const [count, setCount] = useState(0);
@@ -23,14 +22,13 @@ const DashboardPage = props => {
   const [rowsPerPage, setRowsPerPage] = useState(30);
 
   useEffect(() => {
-    if (initLoad === false) {
+    if (!loaded) {
       fetchData();
-      setInitLoaded(true);
     }
-  });
+  }, []);
 
   useEffect(() => {
-    if (initLoad === false) return;
+    if(!loaded) return;
     fetchData();
   }, [page, rowsPerPage]);
 
@@ -39,7 +37,6 @@ const DashboardPage = props => {
     let querys = [];
     querys.push(`page=${page}`);
     querys.push(`size=${rowsPerPage}`);
-    console.log(envars.authServiceUrl);
     let deviceApiResult = await api('get', `${envars.deviceServiceUrl}/devices?${querys.join('&')}`, null);
     if (deviceApiResult.data.success) {
       setCount(deviceApiResult.data.result.count);
@@ -68,14 +65,14 @@ const DashboardPage = props => {
 
   return (
     <div className="paper-with-padding">
-      <Grid container spacing={24}>
+      <Grid container spacing={4}>
         <Grid item xs>
           <Typography variant="h4" component="h2">
-            Device
+            Devices
           </Typography>
         </Grid>
       </Grid>
-      <Grid container spacing={24}>
+      <Grid container spacing={4}>
         <Grid item xs>
           <Paper className="paper-with-padding">
             <Grid item xs>
@@ -83,11 +80,11 @@ const DashboardPage = props => {
                 <SubjectIcon fontSize="large" />
               </Typography>
             </Grid>
-            <Grid container spacing={16}>
+            <Grid container spacing={2}>
               {devices.map((device, i) => {
                 return (
                   <Grid item xs={12} sm={4} key={`device-grid-${i}`} className="deviceCardContainer"  style={{padding: 8}}>
-                    <DeviceCard device={device} onClickHandler={()=>{}}/>
+                    <DeviceCard device={device} onClickHandler={()=>{props.history.push(`/devices/${device.deviceId}`);}}/>
                   </Grid>
                 )
               })}

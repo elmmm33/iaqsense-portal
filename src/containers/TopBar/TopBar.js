@@ -32,8 +32,7 @@ const styles = theme => ({
 	appBar: {
 		zIndex: theme.zIndex.drawer + 1,
 		height: 64,
-		// background: themeStyle.palette.primary
-		background: `linear-gradient(45deg, ${themeStyle.palette.primary.main} 30%, ${themeStyle.palette.secondary.main} 100%)`
+		background: themeStyle.gradientContained
 	}
 });
 

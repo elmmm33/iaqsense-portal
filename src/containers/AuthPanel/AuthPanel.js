@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { withStyles } from '@material-ui/core/styles';
 import { connect } from 'react-redux';
 import axios from 'axios';
 import envars from '../../envars';
@@ -12,7 +13,7 @@ import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 
 import { dialog } from '../../components/Dialog/Dialog';
-
+import { themeStyle } from '../../Themes';
 import './AuthPanel.css';
 
 const AuthPanel = props => {
@@ -76,7 +77,7 @@ const AuthPanel = props => {
             <InputLabel htmlFor="password">Password</InputLabel>
             <Input name="password" type="password" id="password" autoComplete="current-password" value={password} onChange={onPasswordInputChangedHandler} />
           </FormControl>
-          <Button className="auth-panel-login-paper-button" fullWidth variant="contained"  color="primary" onClick={onLoginSubmitHandler}>
+          <Button className={props.classes.loginButton} fullWidth variant="contained"  color="primary" onClick={onLoginSubmitHandler}>
             Sign in
           </Button>
         </form>
@@ -85,7 +86,13 @@ const AuthPanel = props => {
   );
 }
 
-
+const styles = theme => ({
+	loginButton: {
+    // background: themeStyle.palette.primary
+    marginTop: 8,
+    background: themeStyle.gradientContained
+  }
+});
 
 const mapStateToProps = state => {
   return {
@@ -103,4 +110,4 @@ const mapDispatchToProps = dispatch => {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(AuthPanel);
+)(withStyles(styles)(AuthPanel));

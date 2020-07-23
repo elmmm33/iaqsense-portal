@@ -16,6 +16,7 @@ import toHKTimeString from '../../utils/to-hk-time-string';
 import { withSnackbar } from '../../containers/SnackbarManager/SnackbarManager';
 import { withDialog } from '../../containers/DialogManager/DialogManager';
 import DeviceTelemetryTable from '../../containers/DeviceTelemetryTable/DeviceTelemetryTable';
+import DeviceTelemetryFrequencyTable from '../../containers/DeviceTelemetryFrequencyTable/DeviceTelemetryFrequencyTable';
 
 const useInterval = (callback, delay, param) => {
   const savedCallback = useRef();
@@ -38,25 +39,36 @@ const useInterval = (callback, delay, param) => {
 const DevicePage = props => {
   const deviceId = props.match.params.id;
   const [loaded, setLoaded] = useState(false);
-  const [telemetryInitLoaded, setTelemetryInitLoaded] = useState(false);
+
   const [error, setError] = useState(null);
   const [editingConfig, setEditingConfig] = useState(false);
   const [editingLocation, setEditingLoaction] = useState(false);
 
   const [device, setDevice] = useState(null);
+
+  const [telemetryInitLoaded, setTelemetryInitLoaded] = useState(false);
   const [telemetryData, setTelemetryData] = useState([]);
   const [telemetryLastTime, setTelemetryLastTime] = useState(null);
 
-  let telemetryInterval = 10000;
+  const [frequencyInitLoaded, setFrequencyInitLoaded] = useState(false);
+  const [frequencyData, setFrequencyData] = useState([]);
+  const [frequencyLastTime, setFrequencyLastTime] = useState(null);
+
+  let timeInterval = 10000;
 
   useEffect(() => {
     fetchDeviceData();
     fetchTelemetryData();
+    fetchFrequencyData();
   }, []);
 
   useInterval(async () => {
     await fetchTelemetryData();
-  }, telemetryInterval, telemetryLastTime);
+  }, timeInterval, telemetryLastTime);
+
+  useInterval(async () => {
+    await fetchFrequencyData();
+  }, timeInterval, frequencyLastTime);
 
   const fetchDeviceData = async () => {
     setLoaded(false);
@@ -73,7 +85,7 @@ const DevicePage = props => {
   const fetchTelemetryData = async () => {
     // first loaded get 24 hours
     let querys = telemetryInitLoaded && telemetryLastTime ? [`?timestamp=${telemetryLastTime}`] : [];
-    console.log("query time", telemetryLastTime, moment(telemetryLastTime).format());
+    // console.log("query time", telemetryLastTime, moment(telemetryLastTime).format());
 
     let telemetryApiResult = await api('get', `${envars.telemetryServiceUrl}/telemetry/${deviceId}/data${querys.join('&')}`);
     if (telemetryApiResult.data.success) {
@@ -101,6 +113,8 @@ const DevicePage = props => {
         return (moment(b.timestamp, 'YYYY-MM-DDTHH:mm:ss').valueOf() - moment(a.timestamp, 'YYYY-MM-DDTHH:mm:ss').valueOf())
       });
 
+      data.forEach(d=>d.timestamp=toHKTimeString(d.timestamp));
+
       setTelemetryData(data);
 
       // console.log("api result", telemetryApiResult.data.result);
@@ -108,6 +122,49 @@ const DevicePage = props => {
 
     } else {
       handleApiFailureWithDialog(props.requestDialog, telemetryApiResult);
+    }
+  }
+
+  
+  const fetchFrequencyData = async () => {
+    // first loaded get 24 hours
+    let querys = frequencyInitLoaded && frequencyLastTime ? [`?timestamp=${frequencyLastTime}`] : [];
+    // console.log("query time", frequencyInitLoaded, moment(frequencyLastTime).format());
+
+    let frequencyApiResult = await api('get', `${envars.telemetryServiceUrl}/telemetry/${deviceId}/frequency${querys.join('&')}`);
+    if (frequencyApiResult.data.success) {
+      const results = frequencyApiResult.data.result;
+      
+      let data;
+      if(results && results.length > 0){
+        const lastDataTime = moment(results[results.length-1].timestamp, 'YYYY-MM-DDTHH:mm:ss');
+        setFrequencyLastTime(lastDataTime.valueOf()); // save the next time point;
+
+        if (!frequencyInitLoaded) {
+          setFrequencyInitLoaded(true);
+          data = [...results];
+        }else{
+          data = [...frequencyData];
+          results.forEach(result=>{data.push(result)});
+        }  
+      }else{
+        data = [...frequencyData];
+      }
+
+      // filter outdate data
+      data = data.filter(d=> moment().diff(moment(d.timestamp, 'YYYY-MM-DDTHH:mm:ss'), 'm') <= 5);
+      data.sort((a, b) => {
+        return (moment(b.timestamp, 'YYYY-MM-DDTHH:mm:ss').valueOf() - moment(a.timestamp, 'YYYY-MM-DDTHH:mm:ss').valueOf())
+      });
+
+      setFrequencyData(data);
+      data.forEach(d=>d.timestamp=toHKTimeString(d.timestamp));
+
+      // console.log("api result", frequencyApiResult.data.result);
+      // console.log("concat data", data.length);
+
+    } else {
+      handleApiFailureWithDialog(props.requestDialog, frequencyApiResult);
     }
   }
 
@@ -132,7 +189,7 @@ const DevicePage = props => {
               setEditingConfig(true);
             }}
           >
-            <EditIcon /> Edit Config
+            <EditIcon />  Edit Config
           </Button>
         </Grid>
         <Grid item>
@@ -146,7 +203,7 @@ const DevicePage = props => {
           </Button>
         </Grid>
       </Grid>
-      <Grid >
+      <Grid style={{marginBottom: 8}}>
         <Grid item>
           <Typography variant="h6" color="textSecondary">Name: {device.name}</Typography>
         </Grid>
@@ -171,7 +228,7 @@ const DevicePage = props => {
         </Grid>
       </Grid>
       <DeviceTelemetryTable data={telemetryData} type={device.type}/>
-
+      <DeviceTelemetryFrequencyTable data={frequencyData}/>
     </div>
   )
 

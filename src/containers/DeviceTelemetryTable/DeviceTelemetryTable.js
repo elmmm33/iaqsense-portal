@@ -1,63 +1,109 @@
 import React, { Component, useState, useEffect } from 'react';
-import { Paper } from '@material-ui/core';
-import MuiVirtualizedTable from '../../components/MuiVirtualizedTable/MuiVirtualizedTable';
+import { Paper, Grid, Typography } from '@material-ui/core';
+import SubjectIcon from '@material-ui/icons/Subject';
+
 import { IAQ_TYPE, EM_TYPE } from '../../utils/constants';
-import toHKTimeString from '../../utils/to-hk-time-string';
+
+import CustomizedTable from '../../components/CustomizedTable/CustomizedTable';
+import CustomizedTableToolBar from '../../components/CustomizedTableToolBar/CustomizedTableToolBar';
 
 const IAQ_TABLE_COLUMNS = ([
-  { width: 200, dataKey: 'timestamp', label: 'Timestamp' },
-  { width: 120, numeric: true, dataKey: 'temperature', label: 'Temperature\u00A0(°C)' },
-  { width: 120, numeric: true, dataKey: 'humidity', label: 'Humidity\u00A0(%)' },
-  { width: 120, numeric: true, dataKey: 'pm10', label: 'PM\u00A010\u00A0(μg/m3)' },
-  { width: 120, numeric: true, dataKey: 'pm25', label: 'PM\u00A02.5\u00A0(μg/m3)' },
-  { width: 120, numeric: true, dataKey: 'co', label: 'CO\u00A0(ppm)' },
-  { width: 120, numeric: true, dataKey: 'co2', label: 'CO2\u00A0(ppm)' },
-  { width: 120, numeric: true, dataKey: 'voc', label: 'VOC\u00A0(μg/m3)' },
-  { width: 120, numeric: true, dataKey: 'hcn', label: 'HCN\u00A0(-)' }
+  {
+    minWidth: 30, id: 'timestamp', label: 'Timestamp',
+  },
+  {
+    minWidth: 30, id: 'temperature', label: 'Temperature\u00A0(°C)',
+    format: (value) => parseFloat(value.toFixed(4))
+  },
+  {
+    minWidth: 30, id: 'humidity', label: 'Humidity\u00A0(%)',
+    format: (value) => parseFloat(value.toFixed(4))
+  },
+  {
+    minWidth: 30, id: 'pm10', label: 'PM\u00A010\u00A0(μg/m3)',
+    format: (value) => parseFloat(value.toFixed(4))
+  },
+  {
+    minWidth: 30, id: 'pm25', label: 'PM\u00A02.5\u00A0(μg/m3)',
+    format: (value) => parseFloat(value.toFixed(4))
+  },
+  {
+    minWidth: 30, id: 'co', label: 'CO\u00A0(ppm)',
+    format: (value) => parseFloat(value.toFixed(4))
+  },
+  {
+    minWidth: 30, id: 'co2', label: 'CO2\u00A0(ppm)',
+    format: (value) => parseFloat(value.toFixed(4))
+  },
+  {
+    minWidth: 30, id: 'voc', label: 'VOC\u00A0(μg/m3)',
+    format: (value) => parseFloat(value.toFixed(4))
+  },
+  {
+    minWidth: 30, id: 'hcn', label: 'HCN\u00A0(-)',
+    format: (value) => parseFloat(value.toFixed(4))
+  }
 ])
 
 const EM_TABLE_COLUMNS = [
-  { width: 120, dataKey: 'timestamp', label: 'Timestamp' },
-  { width: 120, numeric: true, dataKey: 'time', label: 'Time' },
-  { width: 120, numeric: true, dataKey: 'irin', label: 'Irin' },
-  { width: 120, numeric: true, dataKey: 'irout', label: 'Irout' }
+  {
+    minWidth: 30, id: 'timestamp', label: 'Timestamp',
+  },
+  {
+    minWidth: 30, id: 'time', label: 'Time',
+    format: (value) => parseFloat(value.toFixed(4))
+  },
+  {
+    minWidth: 30, id: 'irin', label: 'Irin',
+    format: (value) => parseFloat(value.toFixed(4))
+  },
+  {
+    minWidth: 30, id: 'irout', label: 'Irout',
+    format: (value) => parseFloat(value.toFixed(4))
+  }
 ]
 
 
 function DeviceTelemetryTable(props) {
   const { data, type } = props;
-  let columns;
-  if(type === IAQ_TYPE){
-    columns = IAQ_TABLE_COLUMNS;
-    data.forEach(d => {
-      d.timestamp = toHKTimeString(d.timestamp);
-      d.temperature = parseFloat(d.temperature.toFixed(4));
-      d.humidity = parseFloat(d.humidity.toFixed(4));
-      d.pm10 = parseFloat(d.pm10.toFixed(4));
-      d.pm25 = parseFloat(d.pm25.toFixed(4));
-      d.co = parseFloat(d.co.toFixed(4));
-      d.co2 = parseFloat(d.co2.toFixed(4));
-      d.voc = parseFloat(d.voc.toFixed(4));
-      d.hcn = parseFloat(d.hcn.toFixed(4));
-    });  
-  }else if (type === EM_TYPE){
-    columns = EM_TABLE_COLUMNS;
-    data.forEach(d => {
-      d.timestamp = toHKTimeString(d.timestamp);
-      d.time = parseFloat(d.time.toFixed(4));
-      d.irin = parseFloat(d.irin.toFixed(4));
-      d.irout = parseFloat(d.irout.toFixed(4));
-    });  
-  }
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(25);
+
+  let columns = type === EM_TYPE ? EM_TABLE_COLUMNS : IAQ_TABLE_COLUMNS;
+
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(+event.target.value);
+    setPage(0);
+  };
 
   return (
-    <Paper style={{ height: 728, width: "100%", marginTop: '16px' }}>
-      <MuiVirtualizedTable
-        rowCount={data.length}
-        rowGetter={({ index }) => data[index]}
-        columns= {columns}
-      />
-    </Paper>
+    <Grid container spacing={4}>
+      <Grid item style={{ width: "100%" }}>
+        <Paper className="paper-with-padding">
+          <Grid item>
+            <Typography variant="h5" component="h2">
+              <SubjectIcon /> Calibration Data
+            </Typography>
+          </Grid>
+          <Grid item>
+            <CustomizedTable
+              name={'calibrationTable'}
+              rows={data}
+              columns={columns}
+              page={page}
+              rowsPerPage={rowsPerPage}
+              rowsPerPageOptions={[25, 50, 100]}
+              handleChangePage={handleChangePage}
+              handleChangeRowsPerPage={handleChangeRowsPerPage}
+            />
+          </Grid>
+        </Paper>
+      </Grid>
+    </Grid>
   )
 }
 

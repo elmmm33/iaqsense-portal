@@ -26,7 +26,7 @@ const toHKTimeString = (input, options) => {
 
   if (input.match(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/)){
     //YYYY-MM-DDTHH:mm:ss
-    let time = moment(input);
+    let time = moment(input, 'YYYY-MM-DDTHH:mm:ss');
     return time.format(format);
   }
 

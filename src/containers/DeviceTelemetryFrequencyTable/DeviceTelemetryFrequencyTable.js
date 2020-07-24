@@ -5,6 +5,7 @@ import SubjectIcon from '@material-ui/icons/Subject';
 import { IAQ_TYPE, EM_TYPE } from '../../utils/constants';
 import toHKTimeString from '../../utils/to-hk-time-string';
 
+import PageLoadingView from '../../components/PageLoadingView/PageLoadingView';
 import CustomizedTable from '../../components/CustomizedTable/CustomizedTable';
 import CustomizedTableToolBar from '../../components/CustomizedTableToolBar/CustomizedTableToolBar';
 
@@ -40,6 +41,10 @@ function DeviceTelemetryFrequencyTable(props) {
     setRowsPerPage(+event.target.value);
     setPage(0);
   };
+
+  if(data === undefined || data.length == 0){
+    return <PageLoadingView />;
+  }
 
   return (
     <Grid container spacing={4}>

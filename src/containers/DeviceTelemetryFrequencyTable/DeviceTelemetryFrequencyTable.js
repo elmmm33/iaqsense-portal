@@ -27,7 +27,7 @@ const COLUMNS = [
 
 
 function DeviceTelemetryFrequencyTable(props) {
-  const { data } = props;
+  const { data, loaded } = props;
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
 
@@ -42,7 +42,7 @@ function DeviceTelemetryFrequencyTable(props) {
     setPage(0);
   };
 
-  if(data === undefined || data.length == 0){
+  if(!loaded){
     return <PageLoadingView />;
   }
 

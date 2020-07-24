@@ -95,19 +95,16 @@ const DevicePage = props => {
       const results = telemetryApiResult.data.result;
 
       let data;
-      if (results && results.length > 0) {
-        const lastDataTime = moment(results[results.length - 1].timestamp, 'YYYY-MM-DDTHH:mm:ss').add(1, 's');
-        setTelemetryLastTime(lastDataTime.valueOf()); // save the next time point;
-
-        if (!telemetryInitLoaded) {
-          setTelemetryInitLoaded(true);
-          data = [...results];
-        } else {
-          data = [...telemetryData];
+      if (!telemetryInitLoaded) {
+        setTelemetryInitLoaded(true);
+        data = [...results];
+      }else{
+        data = [...telemetryData];
+        if (results && results.length > 0) {
+          const lastDataTime = moment(results[results.length - 1].timestamp, 'YYYY-MM-DDTHH:mm:ss').add(1, 's');
+          setTelemetryLastTime(lastDataTime.valueOf()); // save the next time point;
           results.forEach(result => { data.push(result) });
         }
-      } else {
-        data = [...telemetryData];
       }
 
       // filter outdate data
@@ -139,19 +136,16 @@ const DevicePage = props => {
       const results = frequencyApiResult.data.result;
 
       let data;
-      if (results && results.length > 0) {
-        const lastDataTime = moment(results[results.length - 1].timestamp, 'YYYY-MM-DDTHH:mm:ss').add(1, 's');
-        setFrequencyLastTime(lastDataTime.valueOf()); // save the next time point;
-
-        if (!frequencyInitLoaded) {
-          setFrequencyInitLoaded(true);
-          data = [...results];
-        } else {
-          data = [...frequencyData];
+      if (!frequencyInitLoaded) {
+        setFrequencyInitLoaded(true);
+        data = [...results];
+      }else{
+        data = [...frequencyData];
+        if (results && results.length > 0) {
+          const lastDataTime = moment(results[results.length - 1].timestamp, 'YYYY-MM-DDTHH:mm:ss').add(1, 's');
+          setFrequencyLastTime(lastDataTime.valueOf()); // save the next time point;
           results.forEach(result => { data.push(result) });
         }
-      } else {
-        data = [...frequencyData];
       }
 
       // filter outdate data
@@ -229,8 +223,8 @@ const DevicePage = props => {
           </Grid>
         </Grid>
       </Grid>
-      <DeviceTelemetryTable data={telemetryData} type={device.type} />
-      <DeviceTelemetryFrequencyTable data={frequencyData} />
+      <DeviceTelemetryTable data={telemetryData} type={device.type} loaded={telemetryInitLoaded}/>
+      <DeviceTelemetryFrequencyTable data={frequencyData} loaded={frequencyInitLoaded} />
       <DeviceConfigDrawer
         device={device} 
         editingConfig={editingConfig}

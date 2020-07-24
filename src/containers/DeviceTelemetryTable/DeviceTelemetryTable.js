@@ -66,7 +66,7 @@ const EM_TABLE_COLUMNS = [
 
 
 function DeviceTelemetryTable(props) {
-  const { data, type } = props;
+  const { data, type, loaded } = props;
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(25);
 
@@ -81,7 +81,7 @@ function DeviceTelemetryTable(props) {
     setPage(0);
   };
 
-  if(data === undefined || data.length == 0){
+  if(!loaded){
     return <PageLoadingView />;
   }
 

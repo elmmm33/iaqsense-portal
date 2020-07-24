@@ -1,94 +1,99 @@
-import React, { useEffect, useState } from 'react';
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Snackbar from '@material-ui/core/Snackbar';
 import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
 
-const SnackbarManager = props => {
-  const { snackbarQueue, dequeueSnackbar } = props;
-  const [queue, setQueue] = useState([]);
-  const [open, setOpen] = useState(false);
-  const [currentSnackbar, setCurrentSnackbar] = useState({});
+class SnackbarManager extends Component {
+  queue = [];
 
-  useEffect(() => {
-    if (snackbarQueue.length > 0) {
-      enqueue(snackbarQueue[0]);
-      dequeueSnackbar();
+  state = {
+    open: false,
+    currentSnackbar: {}
+  };
+
+  componentDidUpdate = () => {
+    if (this.props.snackbarQueue.length > 0) {
+      this.enqueue(this.props.snackbarQueue[0]);
+      this.props.dequeueSnackbar();
     }
-  }, snackbarQueue)
+  };
 
-  const enqueue = snackbar => {
-    if (open && currentSnackbar.message == snackbar.message) {
+  enqueue = snackbar => {
+    if (this.state.open && this.state.currentSnackbar.message == snackbar.message) {
       //Enqueuing Message is the same as the last message, skip
       return;
     }
 
-    let newQueue = [...queue];
-    newQueue.push({
+    this.queue.push({
       ...snackbar,
       key: new Date().getTime()
     });
-    setQueue(newQueue);
 
-    if (open) {
+    if (this.state.open) {
       // immediately begin dismissing current message
       // to start showing new one
-      setOpen(false);
+      this.setState({ open: false });
     } else {
-      processQueue();
+      this.processQueue();
     }
   };
 
-  const processQueue = () => {
-    if (queue.length > 0) {
-      setCurrentSnackbar(queue.shift());
-      setOpen(true);
+  processQueue = () => {
+    if (this.queue.length > 0) {
+      this.setState({
+        currentSnackbar: this.queue.shift(),
+        open: true
+      });
     }
   };
 
-  const handleClose = (event, reason) => {
+  handleClose = (event, reason) => {
     if (reason === 'clickaway') {
       return;
     }
-    setOpen(false);
+    this.setState({ open: false });
   };
 
-  const handleExited = () => {
-    processQueue();
+  handleExited = () => {
+    this.processQueue();
+  };
+
+  render() {
+    const { currentSnackbar } = this.state;
+    const { message, extraAction } = currentSnackbar;
+    return (
+      <div>
+        <Snackbar
+          key={currentSnackbar.key}
+          anchorOrigin={{
+            vertical: 'bottom',
+            horizontal: 'left'
+          }}
+          open={this.state.open}
+          autoHideDuration={3000}
+          onClose={this.handleClose}
+          onExited={this.handleExited}
+          ContentProps={{
+            'aria-describedby': 'snackbar-message'
+          }}
+          message={<span id="snackbar-message">{message}</span>}
+          action={[
+            <IconButton
+              key="close"
+              aria-label="Close"
+              color="inherit"
+              // className={classes.close}
+              onClick={this.handleClose}
+            >
+              <CloseIcon />
+            </IconButton>
+          ]}
+        />
+      </div>
+    );
   }
-
-  return (
-    <div>
-      <Snackbar
-        key={currentSnackbar.key}
-        anchorOrigin={{
-          vertical: 'bottom',
-          horizontal: 'left'
-        }}
-        open={open}
-        autoHideDuration={3000}
-        onClose={handleClose}
-        onExited={handleExited}
-        ContentProps={{
-          'aria-describedby': 'snackbar-message'
-        }}
-        message={<span id="snackbar-message">{currentSnackbar.message}</span>}
-        action={[
-          <IconButton
-            key="close"
-            aria-label="Close"
-            color="inherit"
-            // className={classes.close}
-            onClick={handleClose}
-          >
-            <CloseIcon />
-          </IconButton>
-        ]}
-      />
-    </div>
-  )
 }
-
 
 let mapStateToProps = state => {
   return {
@@ -110,7 +115,6 @@ export default connect(
   mapStateToProps,
   mapDispatchToProps
 )(SnackbarManager);
-
 
 export const withSnackbar = component => {
   return connect(

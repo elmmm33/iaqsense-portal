@@ -99,7 +99,7 @@ export const handleApiFailureWithDialog = (requestDialog, apiResult, followUp = 
     }
   }else if (!apiError.action || apiError.action === 'DIALOG') {
     requestDialog({
-      title: 'API Error',
+      title: 'Error',
       text: getErrorMessage(apiResult),
       buttons: [
         {

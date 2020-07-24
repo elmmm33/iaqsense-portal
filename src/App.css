@@ -22,9 +22,19 @@ h2:after {
   width: 480px;
 }
 
+.edit-dialog {
+  width: 400px;
+  padding: 16px;
+}
+
 @media only screen and (max-width: 480px) {
   .drawer-on-right {
     width: 320px;
+  }
+  
+  .edit-dialog {
+    width: 800px;
+    padding: 16px;
   }
 }
 

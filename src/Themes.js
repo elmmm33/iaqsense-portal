@@ -15,13 +15,13 @@ export const themeStyle = createMuiTheme({
     },
     error: pink,
   },
-  gradientContained: `linear-gradient(45deg, ${primaryMain} 40%, ${secondaryMain} 100%)`
-  // overrides: {
-  //   MuiButton: {
-  //     containedPrimary: {
-  //       background: 'linear-gradient(45deg, #403A3E 30%, #5894be 100%)',
-  //       color: 'white',
-  //     }
-  //   }
-  // }
+  gradientContained: `linear-gradient(45deg, ${primaryMain} 40%, ${secondaryMain} 100%)`,
+  overrides: {
+    MuiButton: {
+      containedSecondary: {
+        background: `linear-gradient(45deg, ${primaryMain} 40%, ${secondaryMain} 100%)`,
+        color: 'white',
+      }
+    }
+  }
 });

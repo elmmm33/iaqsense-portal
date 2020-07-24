@@ -5,18 +5,21 @@ import { connect } from 'react-redux';
 import { TextField, Grid, Button, Paper, Typography, FormControl, List, ListItem, ListItemText } from '@material-ui/core';
 import EditIcon from '@material-ui/icons/Edit';
 import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
-import PageLoadingView from '../../components/PageLoadingView/PageLoadingView';
-import PageErrorView from '../../components/PageErrorView/PageErrorView';
 
 import envars from '../../envars';
 import api, { handleApiFailureWithDialog } from '../../utils/api';
 import { IAQ_TYPE, EM_TYPE } from '../../utils/constants';
 import toHKTimeString from '../../utils/to-hk-time-string';
 
+import PageLoadingView from '../../components/PageLoadingView/PageLoadingView';
+import PageErrorView from '../../components/PageErrorView/PageErrorView';
+
 import { withSnackbar } from '../../containers/SnackbarManager/SnackbarManager';
 import { withDialog } from '../../containers/DialogManager/DialogManager';
 import DeviceTelemetryTable from '../../containers/DeviceTelemetryTable/DeviceTelemetryTable';
 import DeviceTelemetryFrequencyTable from '../../containers/DeviceTelemetryFrequencyTable/DeviceTelemetryFrequencyTable';
+import DeviceConfigDrawer from '../../containers/DeviceConfigDrawer/DeviceConfigDrawer';
+import DeviceLocationEditDialog from '../../containers/DeviceLocationEditDialog/DeviceLocationEditDialog';
 
 const useInterval = (callback, delay, param) => {
   const savedCallback = useRef();
@@ -90,30 +93,30 @@ const DevicePage = props => {
     let telemetryApiResult = await api('get', `${envars.telemetryServiceUrl}/telemetry/${deviceId}/data${querys.join('&')}`);
     if (telemetryApiResult.data.success) {
       const results = telemetryApiResult.data.result;
-      
+
       let data;
-      if(results && results.length > 0){
-        const lastDataTime = moment(results[results.length-1].timestamp, 'YYYY-MM-DDTHH:mm:ss').add(1, 's');
+      if (results && results.length > 0) {
+        const lastDataTime = moment(results[results.length - 1].timestamp, 'YYYY-MM-DDTHH:mm:ss').add(1, 's');
         setTelemetryLastTime(lastDataTime.valueOf()); // save the next time point;
 
         if (!telemetryInitLoaded) {
           setTelemetryInitLoaded(true);
           data = [...results];
-        }else{
+        } else {
           data = [...telemetryData];
-          results.forEach(result=>{data.push(result)});
-        }  
-      }else{
+          results.forEach(result => { data.push(result) });
+        }
+      } else {
         data = [...telemetryData];
       }
 
       // filter outdate data
-      data = data.filter(d=> moment().diff(moment(d.timestamp, 'YYYY-MM-DDTHH:mm:ss'), 'h') <= 24);
+      data = data.filter(d => moment().diff(moment(d.timestamp, 'YYYY-MM-DDTHH:mm:ss'), 'h') <= 24);
       data.sort((a, b) => {
         return (moment(b.timestamp, 'YYYY-MM-DDTHH:mm:ss').valueOf() - moment(a.timestamp, 'YYYY-MM-DDTHH:mm:ss').valueOf())
       });
 
-      data.forEach(d=>d.timestamp=toHKTimeString(d.timestamp));
+      data.forEach(d => d.timestamp = toHKTimeString(d.timestamp));
 
       setTelemetryData(data);
 
@@ -125,7 +128,7 @@ const DevicePage = props => {
     }
   }
 
-  
+
   const fetchFrequencyData = async () => {
     // first loaded get 24 hours
     let querys = frequencyInitLoaded && frequencyLastTime ? [`?timestamp=${frequencyLastTime}`] : [];
@@ -134,31 +137,31 @@ const DevicePage = props => {
     let frequencyApiResult = await api('get', `${envars.telemetryServiceUrl}/telemetry/${deviceId}/frequency${querys.join('&')}`);
     if (frequencyApiResult.data.success) {
       const results = frequencyApiResult.data.result;
-      
+
       let data;
-      if(results && results.length > 0){
-        const lastDataTime = moment(results[results.length-1].timestamp, 'YYYY-MM-DDTHH:mm:ss').add(1, 's');
+      if (results && results.length > 0) {
+        const lastDataTime = moment(results[results.length - 1].timestamp, 'YYYY-MM-DDTHH:mm:ss').add(1, 's');
         setFrequencyLastTime(lastDataTime.valueOf()); // save the next time point;
 
         if (!frequencyInitLoaded) {
           setFrequencyInitLoaded(true);
           data = [...results];
-        }else{
+        } else {
           data = [...frequencyData];
-          results.forEach(result=>{data.push(result)});
-        }  
-      }else{
+          results.forEach(result => { data.push(result) });
+        }
+      } else {
         data = [...frequencyData];
       }
 
       // filter outdate data
-      data = data.filter(d=> moment().diff(moment(d.timestamp, 'YYYY-MM-DDTHH:mm:ss'), 'm') <= 5);
+      data = data.filter(d => moment().diff(moment(d.timestamp, 'YYYY-MM-DDTHH:mm:ss'), 'm') <= 5);
       data.sort((a, b) => {
         return (moment(b.timestamp, 'YYYY-MM-DDTHH:mm:ss').valueOf() - moment(a.timestamp, 'YYYY-MM-DDTHH:mm:ss').valueOf())
       });
 
       setFrequencyData(data);
-      data.forEach(d=>d.timestamp=toHKTimeString(d.timestamp));
+      data.forEach(d => d.timestamp = toHKTimeString(d.timestamp));
 
       // console.log("api result", frequencyApiResult.data.result);
       // console.log("concat data", data.length);
@@ -167,7 +170,6 @@ const DevicePage = props => {
       handleApiFailureWithDialog(props.requestDialog, frequencyApiResult);
     }
   }
-
 
   if (!loaded) {
     return <PageLoadingView />;
@@ -196,14 +198,14 @@ const DevicePage = props => {
           <Button
             variant="contained"
             onClick={() => {
-              props.history.goBack();
+              props.history.push('/');
             }}
           >
             <ArrowBackIosIcon />Back
           </Button>
         </Grid>
       </Grid>
-      <Grid style={{marginBottom: 8}}>
+      <Grid style={{ marginBottom: 8 }}>
         <Grid item>
           <Typography variant="h6" color="textSecondary">Name: {device.name}</Typography>
         </Grid>
@@ -227,8 +229,28 @@ const DevicePage = props => {
           </Grid>
         </Grid>
       </Grid>
-      <DeviceTelemetryTable data={telemetryData} type={device.type}/>
-      <DeviceTelemetryFrequencyTable data={frequencyData}/>
+      <DeviceTelemetryTable data={telemetryData} type={device.type} />
+      <DeviceTelemetryFrequencyTable data={frequencyData} />
+      <DeviceConfigDrawer
+        device={device} 
+        editingConfig={editingConfig}
+        onBeforeCloseHandler={(updatedDevice)=>{
+          if(updatedDevice){
+            setDevice(updatedDevice);
+          }
+          setEditingConfig(false);
+        }}
+      />
+      <DeviceLocationEditDialog
+        device={device} 
+        open={editingLocation}
+        onBeforeCloseHandler={(updatedDevice)=>{
+          if(updatedDevice){
+            setDevice(updatedDevice);
+          }
+          setEditingLoaction(false);
+        }}
+      />
     </div>
   )
 

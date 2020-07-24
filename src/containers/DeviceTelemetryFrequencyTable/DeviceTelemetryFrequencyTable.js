@@ -17,10 +17,10 @@ const COLUMNS = [
     minWidth: 30, id: 'sleep', label: 'Sleep',
   },
   {
-    minWidth: 30, id: 'startUp', label: 'startUp',
+    minWidth: 30, id: 'startUp', label: 'Start Up',
   },
   {
-    minWidth: 30, id: 'warmUp', label: 'warmUp',
+    minWidth: 30, id: 'warmUp', label: 'Warm Up',
   }
 ]
 
@@ -43,7 +43,7 @@ function DeviceTelemetryFrequencyTable(props) {
 
   return (
     <Grid container spacing={4}>
-      <Grid item style={{ width: "100%" }}>
+      <Grid item xs={12} sm={12}>
         <Paper className="paper-with-padding">
           <Grid item>
             <Typography variant="h5" component="h2">

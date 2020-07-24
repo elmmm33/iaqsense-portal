@@ -82,7 +82,7 @@ function DeviceTelemetryTable(props) {
 
   return (
     <Grid container spacing={4}>
-      <Grid item style={{ width: "100%" }}>
+      <Grid item xs={12} sm={12}>
         <Paper className="paper-with-padding">
           <Grid item>
             <Typography variant="h5" component="h2">

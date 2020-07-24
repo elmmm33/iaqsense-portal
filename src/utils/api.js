@@ -79,8 +79,25 @@ export const getErrorMessage = (apiResult) => {
 export const handleApiFailureWithDialog = (requestDialog, apiResult, followUp = null) => {
   console.log(JSON.stringify(apiResult.data));
   let apiError = apiResult.data;
-
-  if (apiError.code.includes('AU-')) {
+  if(!apiError.ok){
+    if (requestDialog) {
+      requestDialog({
+        title: 'Server Error',
+        text: 'Not Found',
+        buttons: [
+          {
+            text: 'ok',
+            onClick: () => {
+              if (followUp) {
+                followUp();
+              }
+            },
+          },
+        ],
+      });
+    }
+  }
+  else if (apiError.code.includes('AU-')) {
     if (requestDialog) {
       requestDialog({
         title: 'Session expired',
@@ -92,10 +109,8 @@ export const handleApiFailureWithDialog = (requestDialog, apiResult, followUp = 
               sessionStorage.clear();
               window.location.reload();
               return;
-            },
-          },
-        ],
-      });
+            },},],
+        });
     }
   }else if (!apiError.action || apiError.action === 'DIALOG') {
     requestDialog({
@@ -107,8 +122,7 @@ export const handleApiFailureWithDialog = (requestDialog, apiResult, followUp = 
           onClick: () => {
             if (followUp) {
               followUp();
-            }
-          },
+            }},
         },
       ],
     });
@@ -119,7 +133,9 @@ export const handleApiFailureWithSnackbar = (makeSnackbar, apiResult) => {
   // console.log(JSON.stringify(apiResult.data));
   let apiError = apiResult.data;
 
-  if (apiError.code.includes('AU-')) {
+  if(!apiError.ok){
+    makeSnackbar('Server Error');
+  }else if (apiError.code.includes('AU-')) {
     makeSnackbar('Please login again');
     sessionStorage.clear();
   }else if (!apiError.action || apiError.action === 'DIALOG') {

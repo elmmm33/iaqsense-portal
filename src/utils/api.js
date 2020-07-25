@@ -24,34 +24,32 @@ const api = async (method, url, data) => {
     if (e.response) {
       apiResult = e.response;
     } else {
-      apiResult = {
-        data: {
-          ok: false,
-          error: {
-            messageKey: `no-response`,
-          },
-        },
-      };
-    }
+      apiResult.data = {
+        success: false,
+        code: "SE-001",
+        msg: 'Server Error'
+      }
+    };
   }
 
-  if (!apiResult.data.error) {
-    if (apiResult.status == 404) {
-      apiResult.data = {
-        ok: false,
-        error: {
-          message: 'Not Found',
-        },
-      };
-    } else if (apiResult.status == 500) {
-      apiResult.data = {
-        ok: false,
-        error: {
-          message: 'Server Error',
-        },
-      };
-    }
-  }
+  // if (!apiResult.data.success) {
+  //   if (apiResult.status == 404) {
+  //     apiResult.data = {
+  //       success: false,
+  //       msg: 'Not Found',
+  //       result: null,
+  //       moment: moment().format()
+  //     };
+  //   } else if (apiResult.status == 500) {
+  //     apiResult.data = {
+  //       success: false,
+  //       msg: 'Server Error',
+  //       result: null,
+  //       moment: moment().format()
+  //     };
+  //   }
+  // }
+
   return apiResult;
 };
 
@@ -77,68 +75,47 @@ export const getErrorMessage = (apiResult) => {
 };
 
 export const handleApiFailureWithDialog = (requestDialog, apiResult, followUp = null) => {
-  console.log(JSON.stringify(apiResult.data));
+  // console.log(JSON.stringify(apiResult.data));
   let apiError = apiResult.data;
-  if(!apiError.ok){
-    if (requestDialog) {
-      requestDialog({
-        title: 'Server Error',
-        text: 'Not Found',
-        buttons: [
-          {
-            text: 'ok',
-            onClick: () => {
-              if (followUp) {
-                followUp();
-              }
-            },
-          },
-        ],
-      });
-    }
-  }
-  else if (apiError.code.includes('AU-')) {
+  if (apiError.code && apiError.code.includes('AU-')) {
     if (requestDialog) {
       requestDialog({
         title: 'Session expired',
         text: 'Please login again',
-        buttons: [
-          {
-            text: 'ok',
-            onClick: () => {
-              sessionStorage.clear();
-              window.location.reload();
-              return;
-            },},],
-        });
+        buttons: [{
+          text: 'ok',
+          onClick: () => {
+            sessionStorage.clear();
+            window.location.reload();
+            return;
+          }
+        }],
+      });
     }
-  }else if (!apiError.action || apiError.action === 'DIALOG') {
+  } else {
+    // if (!apiError.action || apiError.action === 'DIALOG')
     requestDialog({
       title: 'Error',
       text: getErrorMessage(apiResult),
-      buttons: [
-        {
-          text: 'OK',
-          onClick: () => {
-            if (followUp) {
-              followUp();
-            }},
-        },
-      ],
+      buttons: [{
+        text: 'OK',
+        onClick: () => {
+          if (followUp) { followUp(); }
+        }
+      }],
     });
-  } 
+  }
 };
 
 export const handleApiFailureWithSnackbar = (makeSnackbar, apiResult) => {
   // console.log(JSON.stringify(apiResult.data));
   let apiError = apiResult.data;
 
-  if(!apiError.ok){
-    makeSnackbar('Server Error');
-  }else if (apiError.code.includes('AU-')) {
+  if (apiError.code && apiError.code.includes('AU-')) {
     makeSnackbar('Please login again');
     sessionStorage.clear();
-  }else if (!apiError.action || apiError.action === 'DIALOG') {
+  } else {
+    //  if (!apiError.action || apiError.action === 'DIALOG') 
     makeSnackbar(getErrorMessage(apiResult));
-  } 
+  }
 };

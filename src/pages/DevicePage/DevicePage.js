@@ -93,20 +93,21 @@ const DevicePage = props => {
     let telemetryApiResult = await api('get', `${envars.telemetryServiceUrl}/telemetry/${deviceId}/data${querys.join('&')}`);
     if (telemetryApiResult.data.success) {
       const results = telemetryApiResult.data.result;
+
+      let data;
       if (results && results.length > 0) {
         const lastDataTime = moment(results[results.length - 1].timestamp, 'YYYY-MM-DDTHH:mm:ss').add(1, 's');
         setTelemetryLastTime(lastDataTime.valueOf()); // save the next time point;
-      }
 
-      let data;
-      if (!telemetryInitLoaded) {
-        setTelemetryInitLoaded(true);
-        data = [...results];
-      }else{
-        data = [...telemetryData];
-        if (results && results.length > 0) {
+        if (!telemetryInitLoaded) {
+          setTelemetryInitLoaded(true);
+          data = [...results];
+        }else{
+          data = [...telemetryData];
           results.forEach(result => { data.push(result) });
         }
+      }else{
+        data = [...telemetryData];
       }
 
       // filter outdate data
@@ -137,20 +138,20 @@ const DevicePage = props => {
     if (frequencyApiResult.data.success) {
       const results = frequencyApiResult.data.result;
 
+      let data;
       if (results && results.length > 0) {
         const lastDataTime = moment(results[results.length - 1].timestamp, 'YYYY-MM-DDTHH:mm:ss').add(1, 's');
         setFrequencyLastTime(lastDataTime.valueOf()); // save the next time point;
-      }
 
-      let data;
-      if (!frequencyInitLoaded) {
-        setFrequencyInitLoaded(true);
-        data = [...results];
-      }else{
-        data = [...frequencyData];
-        if (results && results.length > 0) {
+        if (!frequencyInitLoaded) {
+          setFrequencyInitLoaded(true);
+          data = [...results];
+        }else{
+          data = [...frequencyData];
           results.forEach(result => { data.push(result) });
         }
+      }else {
+        data = [...frequencyData];
       }
 
       // filter outdate data

@@ -40,7 +40,7 @@ const NavBar = props => {
   
   return(
     <Fragment>
-    <Hidden smDown implementation="css">
+    <Hidden mdDown implementation="css">
       <Drawer
         className={classes.drawer}
         variant="permanent"
@@ -53,7 +53,7 @@ const NavBar = props => {
       </Drawer>
     </Hidden>
 
-    <Hidden mdUp implementation="css">
+    <Hidden smUp implementation="css">
       <Drawer
         className={classes.drawer}
         variant="temporary"

@@ -51,13 +51,13 @@ class TopBarUserView extends Component {
       <Fragment>
         <ButtonBase aria-owns={menuAnchorEl ? 'action-menu' : undefined} aria-haspopup="true" onClick={this.onMenuToggleHander}>
           <Grid container spacing={1} alignItems="center">
-            <Grid item>
+            <Grid item xs={8}>
               <Typography color="inherit">{`${capitalizeFirstLetter(user.firstName)} ${capitalizeFirstLetter(user.lastName)}`}</Typography>
               {/* <Typography color="inherit" variant="caption">
                 {products.find(p => p.id == selectedProductId).name}
               </Typography> */}
             </Grid>
-            <Grid item>
+            <Grid item xs={2}>
               <Avatar>{capitalizeFirstLetter(user.firstName)[0]}</Avatar>
             </Grid>
           </Grid>

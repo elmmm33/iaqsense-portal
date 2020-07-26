@@ -267,6 +267,4 @@ const mapStateToProps = state => {
   };
 };
 
-
-
 export default connect(mapStateToProps, null)(withDialog(withSnackbar(DashboardPage)));

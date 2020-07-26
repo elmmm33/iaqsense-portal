@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { Hidden, Drawer, List, ListItem, ListItemIcon, ListItemText, Collapse } from '@material-ui/core/';
 import { withStyles } from '@material-ui/core/styles';
-
+import DescriptionIcon from '@material-ui/icons/Description';
 import DashboardIcon from '@material-ui/icons/Dashboard';
 
 const NavBar = props => {
@@ -37,6 +37,23 @@ const NavBar = props => {
       <ListItemText>Dashboard</ListItemText>
     </ListItem>
   );
+
+  listItems.push(
+    <ListItem
+      key="exportData"
+      button
+      onClick={() => {
+        props.history.push('/export');
+        onMobileClose();
+      }}
+    >
+      <ListItemIcon>
+        <DescriptionIcon />
+      </ListItemIcon>
+      <ListItemText>Export Data</ListItemText>
+    </ListItem>
+  );
+  
   
   return(
     <Fragment>

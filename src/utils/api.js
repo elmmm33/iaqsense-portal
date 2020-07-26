@@ -1,13 +1,20 @@
 import axios from 'axios';
 import errorMessageDict from './error-message-dict';
 
-const api = async (method, url, data) => {
+const api = async (method, url, data, extraOptions) => {
   let authToken = sessionStorage.getItem('authToken');
 
   let options = {
     method,
     url,
   };
+  
+  if (extraOptions) {
+    options = {
+      ...options,
+      ...extraOptions
+    };
+  }
 
   if (authToken) {
     options.headers = { Authorization: `Bearer ${authToken}` };

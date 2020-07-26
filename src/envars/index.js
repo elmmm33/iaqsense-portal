@@ -14,9 +14,9 @@ if (process.env.REACT_APP_EVQSENSE_PORTAL_ENV === 'prd') {
 } else {
   envars = {
     authServiceUrl: "https://evqsense-auth-service-dev-3togabxujq-an.a.run.app",
-    telemetryServiceUrl: "https://evqsense-telemetry-service-dev-3togabxujq-an.a.run.app",
-    deviceServiceUrl: "https://evqsense-device-service-dev-3togabxujq-an.a.run.app"
-    // deviceServiceUrl: "http://localhost:3002"
+    // telemetryServiceUrl: "https://evqsense-telemetry-service-dev-3togabxujq-an.a.run.app",
+    deviceServiceUrl: "https://evqsense-device-service-dev-3togabxujq-an.a.run.app",
+    telemetryServiceUrl: "http://localhost:3003"
   }
 }
 

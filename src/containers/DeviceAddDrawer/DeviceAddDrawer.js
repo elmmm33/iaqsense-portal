@@ -58,7 +58,7 @@ const DeviceAddDrawer = props => {
     if (addDeviceApiResult.data.success) {
       props.makeSnackbar('Add Device Successfully.')
       let newDevice = addDeviceApiResult.data.result.device;
-      console.log(newDevice);
+      // console.log(newDevice);
       onBeforeCloseHandler(newDevice);
     } else {
       handleApiFailureWithDialog(props.requestDialog, addDeviceApiResult);

@@ -12,7 +12,7 @@ let initialState = {
       };
     } else if (action.type === 'LOGIN') {
       let user = JSON.parse(atob(action.payload.authToken.split('.')[1]));
-      console.log(user);
+      // console.log(user);
       return {
         ...originalState,
         authToken: action.payload.authToken,

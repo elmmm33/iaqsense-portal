@@ -59,7 +59,6 @@ const ExportDataPage = props => {
         let filename = disposition.replace(/attachment;.*filename=/, '').replace(/"/g, '');
         const file = new Blob([exportDataApiResult.data]);
         const tempUrl = window.URL.createObjectURL(file);
-        console.log(filename);
         setIAQFileName(filename);
         setIAQTempUrl(tempUrl);
       }
@@ -90,7 +89,6 @@ const ExportDataPage = props => {
 
 
   const FileItem = (fileName, url) => {
-    console.log(fileName);
     return (
       <ListItem>
         <ListItemAvatar>

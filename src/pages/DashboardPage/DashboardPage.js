@@ -221,7 +221,15 @@ const DashboardPage = props => {
                   devices.map((device, i) => {
                     return (
                       <Grid item xs={12} sm={4} key={`device-grid-${i}`} className="deviceCardContainer" margin='normal'>
-                        <DeviceCard device={device} onClickHandler={() => { props.history.push(`/devices/${device.deviceId}`); }} />
+                        <DeviceCard device={device} onClickHandler={(e) => {
+                          if (e.ctrlKey) {
+                            const win = window.open(`/devices/${device.deviceId}`, '_blank');
+                            win.blur();
+                            win.focus();
+                          } else {
+                            props.history.push(`/devices/${device.deviceId}`);
+                          }
+                        }} />
                       </Grid>
                     )
                   })
@@ -249,8 +257,8 @@ const DashboardPage = props => {
       </Grid>
       <DeviceAddDrawer
         open={addingNewDevice}
-        onBeforeCloseHandler={(newDevice)=>{
-          if(newDevice){
+        onBeforeCloseHandler={(newDevice) => {
+          if (newDevice) {
             fetchData();
           }
           setAddingNewDevice(false);

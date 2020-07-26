@@ -41,7 +41,7 @@ const AuthPanel = props => {
         apiResult = e.response;
       }
       if (apiResult.data && apiResult.data.success) {
-        console.log(apiResult.data);
+        // console.log(apiResult.data);
         if(apiResult.data.result.role >= 2){
           let authToken = apiResult.data.result.token;
           sessionStorage.setItem('authToken', authToken);

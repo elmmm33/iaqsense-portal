@@ -30,7 +30,7 @@ class App extends Component {
   componentDidMount = () => {
     let authToken = sessionStorage.getItem('authToken');
     if (authToken) {
-      console.log('resume login');
+      // console.log('resume login');
       this.props.login(authToken);
     }
     this.updateWindowDimensions();

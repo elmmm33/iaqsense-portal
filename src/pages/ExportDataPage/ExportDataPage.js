@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import moment from 'moment';
 import { connect } from 'react-redux';
 import _ from 'lodash';
 import {
@@ -15,6 +16,7 @@ import envars from '../../envars';
 import api, { handleApiFailureWithDialog } from '../../utils/api';
 
 import PageLoadingView from '../../components/PageLoadingView/PageLoadingView';
+import { dialog } from '../../components/Dialog/Dialog';
 import { withSnackbar } from '../../containers/SnackbarManager/SnackbarManager';
 import { withDialog } from '../../containers/DialogManager/DialogManager';
 
@@ -34,8 +36,16 @@ const ExportDataPage = props => {
   const [IAQTempUrl, setIAQTempUrl] = useState(null);
   const [EMTempUrl, setEMTempUrl] = useState(null);
 
-  const dateDisabled = date => (date.getTime() < minDate.getTime() || date.getTime() > maxDate.getTime())
+  const dateDisabled = date => (date.getTime() < minDate.getTime() || date.getTime() > maxDate.getTime());
+
   const exportButtonClick = async (e) => {
+    const fromTs = moment(from, "x");
+    const toTs = moment(to, "x");
+    if (toTs.diff(fromTs) > 604800 * 1000) {
+      dialog({ icon: 'times-circle', message: 'The maximum export date period is 7 days' });
+      return;
+    }
+
     setExportFileClick(true);
     setFilePreparing(true);
 
@@ -53,7 +63,7 @@ const ExportDataPage = props => {
     };
 
     let exportDataApiResult = await api('get', `${envars.telemetryServiceUrl}/telemetry/csv/iaq?${querys.join('&')}`, null, options);
-    if (exportDataApiResult.data) {
+    if (exportDataApiResult.data && exportDataApiResult.data.type === 'text/csv') {
       const disposition = exportDataApiResult.headers['content-disposition'];
       if (disposition && disposition.match(/attachment/)) {
         let filename = disposition.replace(/attachment;.*filename=/, '').replace(/"/g, '');
@@ -61,6 +71,14 @@ const ExportDataPage = props => {
         const tempUrl = window.URL.createObjectURL(file);
         setIAQFileName(filename);
         setIAQTempUrl(tempUrl);
+      }
+    }else{
+      const reader = new FileReader();
+      reader.readAsText(exportDataApiResult.data)
+      reader.onload = () => {
+        let errorResult = {}
+        errorResult.data = JSON.parse(reader.result);
+        handleApiFailureWithDialog(props.requestDialog, errorResult);
       }
     }
   }
@@ -75,7 +93,7 @@ const ExportDataPage = props => {
     };
 
     let exportDataApiResult = await api('get', `${envars.telemetryServiceUrl}/telemetry/csv/em?${querys.join('&')}`, null, options);
-    if (exportDataApiResult.data) {
+    if (exportDataApiResult.data && exportDataApiResult.data.type === 'text/csv') {
       const disposition = exportDataApiResult.headers['content-disposition'];
       if (disposition && disposition.match(/attachment/)) {
         let filename = disposition.replace(/attachment;.*filename=/, '').replace(/"/g, '');
@@ -83,6 +101,14 @@ const ExportDataPage = props => {
         const tempUrl = window.URL.createObjectURL(file);
         setEMFileName(filename);
         setEMTempUrl(tempUrl);
+      }
+    }else{
+      const reader = new FileReader();
+      reader.readAsText(exportDataApiResult.data)
+      reader.onload = () => {
+        let errorResult = {}
+        errorResult.data = JSON.parse(reader.result);
+        handleApiFailureWithDialog(props.requestDialog, errorResult);
       }
     }
   }
